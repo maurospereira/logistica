@@ -1,4 +1,4 @@
-package com.best2bee.logistica.api.controller;
+package com.best2bee.logistica.api.resoucer;
 
 import java.util.List;
 
@@ -13,26 +13,21 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.best2bee.logistica.api.form.EmpresaForm;
-import com.best2bee.logistica.api.model.Empresa;
-import com.best2bee.logistica.api.service.EmpresaService;
+import com.best2bee.logistica.api.model.Company;
+import com.best2bee.logistica.api.model.dto.CompanyDTO;
+import com.best2bee.logistica.api.service.CompanyService;
 
 
 @RestController
 @RequestMapping("/empresa")
-public class EmpresaController {
+public class CompanyResource {
 
 	@Autowired
-	EmpresaService empresaService;
-	
-	@GetMapping
-	public ResponseEntity<List<Empresa>> listarUsuarios(Empresa empresa) {
-		return new ResponseEntity<>(empresaService.listar(empresa), HttpStatus.OK);
-	}
+	CompanyService companyService;
 	
 	@PostMapping
-	public ResponseEntity<Void> inserirEmpresas(@Valid @RequestBody EmpresaForm empresa){
-		empresaService.inserir(empresa);
+	public ResponseEntity<Void> insertCompany(@Valid @RequestBody CompanyDTO empresa){
+		companyService.insert(empresa);
 		return new ResponseEntity<Void>(HttpStatus.CREATED);
 	}
 }
