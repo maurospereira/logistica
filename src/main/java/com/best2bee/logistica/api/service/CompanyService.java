@@ -1,5 +1,6 @@
 package com.best2bee.logistica.api.service;
 
+import java.util.List;
 import java.util.Optional;
 
 import javax.transaction.Transactional;
@@ -7,8 +8,10 @@ import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.best2bee.logistica.api.exceptions.CompanyNotFoundException;
 import com.best2bee.logistica.api.model.Adress;
 import com.best2bee.logistica.api.model.Company;
+import com.best2bee.logistica.api.model.Pack;
 import com.best2bee.logistica.api.model.dto.CompanyDTO;
 import com.best2bee.logistica.api.repository.AdressRepository;
 import com.best2bee.logistica.api.repository.CompanyRepository;
@@ -36,31 +39,15 @@ public class CompanyService{
 	}
 	
 	@Transactional
-	public void deleteCompany(String cnpj) throws Exception {
-		companyRepository.deleteByCnpj(cnpj);
-	}
-
-	@Transactional
-	public void deletePackageByIdAndCnpj(Long packageNumber, String cnpj) {
-		packRepository.deleteByIdAndCompanyCnpj(packageNumber, cnpj);
-	}
-
-	@Transactional
 	public void updateCompany(String cnpj, CompanyDTO companyDTO) {
 		Optional<Company> companyOpt = companyRepository.findByCnpj(cnpj);
 
 		if (companyOpt.isPresent()) {
 			Company company = companyOpt.get();
 
-			// TODO put nome fantasia?
 			if (companyDTO.getTradingName() != null) {
 				String tradingName = companyDTO.getTradingName();
 				company.setTradingName(tradingName);
-			}
-
-			if (companyDTO.getCompanyName() != null) {
-				String companyName = companyDTO.getCompanyName();
-				company.setCompanyName(companyName);
 			}
 
 			if (companyDTO.getZip() != null) {
@@ -81,5 +68,37 @@ public class CompanyService{
 				}
 			}
 		}
+	}
+	
+	@Transactional
+	public void deleteCompany(String cnpj) throws Exception {
+		
+		Optional<Company> companyOpt = companyRepository.findByCnpj(cnpj);
+		
+		if (companyOpt.isPresent()) {
+			Company company = companyOpt.get();
+			company.setActive(false);
+			
+			List<Adress> adresses = adressRepository.getByCompany(company);
+			adresses.stream().forEach(adress -> {
+				adress.setActive(false);
+				adressRepository.save(adress);
+			});
+			
+			List<Pack> packages = packRepository.getByCompany(company);
+			packages.stream().forEach(pack -> {
+				pack.setActive(false);
+				packRepository.save(pack);
+			});
+			
+			companyRepository.save(company);
+		} else {
+			throw new CompanyNotFoundException();
+		}
+	}
+
+	@Transactional
+	public void deletePackageById(Long packageNumber) {
+		packRepository.deleteById(packageNumber);
 	}
 }
