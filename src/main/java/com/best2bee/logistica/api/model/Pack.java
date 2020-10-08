@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -16,15 +17,15 @@ import javax.validation.constraints.NotNull;
 public class Pack {
 
 	@Id
-	@GeneratedValue
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
 	@NotNull
-	@Column(name="STATUS", unique = true)
+	@Column(name="STATUS")
 	private String status;
 	
 	@NotNull
-	@Column(name="ENTRY_DATE", unique=true)
+	@Column(name="ENTRY_DATE")
 	private LocalDate entryDate = LocalDate.now();
 	
 	@ManyToOne
@@ -34,6 +35,10 @@ public class Pack {
 	@ManyToOne
 	@JoinColumn(name="ID_ADRESS", referencedColumnName = "id")
 	private Adress adress;
+	
+	@NotNull
+	@Column(name="ACTIVE")
+	private Boolean active = true;
 	
 	public Pack() {}
 
@@ -74,6 +79,14 @@ public class Pack {
 
 	public void setAdress(Adress adress) {
 		this.adress = adress;
+	}
+
+	public Boolean getActive() {
+		return active;
+	}
+
+	public void setActive(Boolean active) {
+		this.active = active;
 	}
 
 	

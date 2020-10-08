@@ -7,6 +7,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -17,7 +18,7 @@ import javax.validation.constraints.NotNull;
 public class Adress {
 	
 	@Id
-	@GeneratedValue
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
 	@NotNull
@@ -46,6 +47,10 @@ public class Adress {
 	@NotNull
 	@Column(name="STATE")
 	private String state;
+	
+	@NotNull
+	@Column(name="ACTIVE")
+	private Boolean active = true;
 
 	@OneToMany(targetEntity=Company.class, 
 	           mappedBy="adress",
@@ -126,5 +131,13 @@ public class Adress {
 
 	public void setState(String state) {
 		this.state = state;
+	}
+	
+	public Boolean getActive() {
+		return active;
+	}
+
+	public void setActive(Boolean active) {
+		this.active = active;
 	}
 }

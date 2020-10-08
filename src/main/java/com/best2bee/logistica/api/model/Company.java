@@ -7,6 +7,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -19,7 +20,7 @@ import javax.validation.constraints.NotNull;
 public class Company{
 	
 	@Id
-	@GeneratedValue
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
 	@NotNull
@@ -27,16 +28,20 @@ public class Company{
 	private String cnpj;
 	
 	@NotNull
-	@Column(name="TRADING_NAME", unique = true)
+	@Column(name="TRADING_NAME")
 	private String tradingName;
 	
 	@NotNull
-	@Column(name="COMPANY_NAME")
+	@Column(name="COMPANY_NAME", unique = true)
 	private String companyName;
 	
 	@NotNull
 	@Column(name="REGISTER_DATE")
 	private LocalDate registerDate = LocalDate.now();
+	
+	@NotNull
+	@Column(name="ACTIVE")
+	private Boolean active = true;
 	
 	@OneToMany(targetEntity=Pack.class, 
 	           mappedBy="company",
@@ -47,6 +52,8 @@ public class Company{
 	@ManyToOne(cascade=CascadeType.REMOVE)
 	@JoinColumn(name="ID_ADRESS", referencedColumnName = "id")
 	private Adress adress;
+	
+	
 	
 	public Company() {}
 
@@ -87,6 +94,14 @@ public class Company{
 
 	public void setAdress(Adress adress) {
 		this.adress = adress;
+	}
+
+	public Boolean getActive() {
+		return active;
+	}
+
+	public void setActive(Boolean active) {
+		this.active = active;
 	}
 	
 }
