@@ -1,5 +1,6 @@
 package com.best2bee.logistica.api.repository;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -12,5 +13,7 @@ import com.best2bee.logistica.api.model.Company;
 public interface AdressRepository  extends JpaRepository<Adress, Integer>{
 
 	Optional<Adress> findByCompany(Company company);
+
+	List<Adress> getByCompany(Company company);
 
 }
